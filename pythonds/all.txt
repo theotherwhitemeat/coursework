@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 class TreeNode(object):
 
     def __init__(self, val):
@@ -7,6 +5,7 @@ class TreeNode(object):
         self.left = None  # left leaf
         self.right = None  # right leaf
         self.level = None  # height?
+
 
 class BST(object):
 
@@ -55,49 +54,27 @@ class BST(object):
             self.preorder()
 
 
-
-
-
-
-
-if __name__ == '__main__':
-    # Running directly?  Let's validate our BST!
-
-import sys
-from collections import LinkedList
-
 class Dequeue(object):
 
-	def __init__(self, iterable=None):
+    def __init__(self, iterable=None):
+        pass
+        #self._deq = LinkedList()
 
-		self._deq = LinkedList()
-
-	def pushleft(self, item):
-		""" Returns: None.  Pushes to left of dequeue. """
-
-		self._deq.
-
-
-
-
-
-def main():
-	""" Returns: None.  Validates Dequeue. """
-
-
-if __name__ == '__main__':
-	sys.exit(main())#!/usr/bin/env python
+    def pushleft(self, item):
+        """ Returns: None.  Pushes to left of dequeue. """
+        pass
+        #self._deq.
 
 
 class IndexOutOfRangeError(Exception):
     pass
+
 
 class Node(object):
     """ Classic Node class for use in
     LinkedList. """
 
     def __init__(self, data=None):
-        
         self._data = data
         self._next = None
         self._prev = None
@@ -149,7 +126,7 @@ class LinkedList(object):
     def search(self, item):
         """ Returns: index (int) of item. """
         return self.index(item) is not None
-    
+
     def index(self, item):
         """ Returns: index of item, or None. """
         n = 0
@@ -180,7 +157,6 @@ class LinkedList(object):
         """ Returns: None. Inserts item @ index. """
         cur = self._head
         prev = None
-        next = cur.getNext()
         item = Node(item)
         n = 0
         while cur:
@@ -269,71 +245,6 @@ class LinkedList(object):
         return mid.getData()
 
 
-if __name__ == '__main__':
-    """ Validates Node, LinkedList. """
-
-    nodeA, nodeB = Node(1), Node(2)
-    nodeA.setNext(nodeB)
-    nodeB.setPrev(nodeA)
-    assert nodeA.getData() == 1
-    assert nodeB.getData() == 2
-    assert nodeA.getNext() is nodeB
-    assert nodeB.getPrev() is nodeA
-
-    tlist = LinkedList()
-    tlist.add(1)
-    print tlist
-    assert tlist.search(1)
-    assert tlist.index(1) == 0
-    assert tlist.size() == 1
-    tlist.add(2)
-    print tlist
-    assert tlist.index(1) == 1
-    assert tlist.index(2) == 0
-    assert tlist.search(1)
-    assert tlist.size() == 2
-    assert not tlist.isEmpty()
-
-    tlist.append(3)
-    tlist.append(4)
-    print tlist
-    assert tlist.__str__() == "2>>1>>3>>4"
-
-    # test insert() and pop()
-    tlist = LinkedList()
-    tlist.add(2)
-    tlist.insert(0, 1)
-    tlist.insert(0, 0)
-    assert tlist.index(0) == 0
-    assert tlist.index(1) == 1
-    assert tlist.index(2) == 2
-
-    assert tlist.size() == 3
-    assert tlist.pop() == 2
-    assert tlist.size() == 2
-    assert tlist.index(tlist.size() - 1) == tlist.pop(tlist.size() - 1)
-
-    # test getMiddle()
-    tlist = LinkedList()
-    tlist.add(1)
-    tlist.add(2)
-    tlist.add(3)
-    print tlist.getMiddle()
-    assert tlist.getMiddle() == 2
-
-
-
-
-
-
-
-
-
-
-
-
-#!/usr/bin/env python
-
 class Queue(object):
 
     def __init__(self):
@@ -382,7 +293,6 @@ if __name__ == '__main__':
         qitem = queuey.dequeue()
         assert item == qitem
 
-#!/usr/bin/env python
 
 class BubbleSorter(object):
     """ Bubble sort: iterate over sequence, comparing adjacent items
@@ -417,8 +327,9 @@ class BubbleSorter(object):
         self._seq = seq
         #print seq
 
+
 class SelectionSorter(object):
-    """ Selection sort: find nth largest item, place at sequence[-n]. 
+    """ Selection sort: find nth largest item, place at sequence[-n].
     O(n**2) """
 
     def __init__(self, seq):
@@ -436,16 +347,15 @@ class SelectionSorter(object):
             unsorted = False
             iterations += 1
             largest = seq[0]
-            largestIndex = 0
             n = 0
             for item in seq:
                 if item > largest:
                     largest = item
-                    largestIndex = n
                     unsorted = True
                 n += 1
             # swap values, counting back from the end of the list
             seq[-iterations], seq[n] = seq[n], seq[-iterations]
+
 
 class InsertionSorter(object):
     """ Insertion sort: start at item 0 in sequence, and build a sorted
@@ -474,6 +384,7 @@ class InsertionSorter(object):
                     n += 1
         self._seq = seq
         print seq
+
 
 class RadixSorter(object):
     """ Radix sort:
@@ -530,6 +441,7 @@ class RadixSorter(object):
             buckets = [list() for x in xrange(0, 10)]
         return items
 
+
 def getRandomSequence():
     """ Returns: random list of ints, 20 ints,
     int size: 0-100. """
@@ -537,14 +449,6 @@ def getRandomSequence():
     seq = [int(random() * 100) for x in xrange(0, 20)]
     return seq
 
-if __name__ == '__main__':
-    # If called directly, let's validate our sorter!
-
-    randomSequence = getRandomSequence()
-    sorter = InsertionSorter(randomSequence)
-
-
-#!/usr/bin/env python
 
 class Stack(object):
 
@@ -588,41 +492,17 @@ if __name__ == '__main__':
         assert item == stacky.peek()
         assert item == stacky.pop()
 
-    
-import sys
-
 
 def getBits(num):
-	""" Returns: int, bitcount of num. """
+    """ Returns: int, bitcount of num. """
 
-	total = 0
-	while(num):
-		total += num & 0b1
-		num = num >> 1
+    total = 0
+    while(num):
+        total += num & 0b1
+        num = num >> 1
 
-	return total
+    return total
 
-
-def main():
-	""" Returns: None.  Counts bits in sys.argv[-1] """
-
-	numInput = sys.argv[-1]
-
-	try:
-		bits = int(numInput)
-	except ValueError:
-		print >> sys.stderr, "Give me a number, please, not this: %s" % numInput
-
-	bitTotal = getBits(bits)
-
-	print "%d bits in %d"  % (bitTotal, bits)
-
-if __name__ == '__main__':
-	sys.exit(main())
-#!/usr/bin/env python
-from collections import defaultdict
-import sys
-import types  # types.FunctionType
 
 # setup some examples, could be useful
 exampleNums = [3, 6, 24, 6234, 2342, 2]
@@ -770,7 +650,7 @@ def getDupes(items=None):
     from random import random
     if not items:
         items = [int(random()*100) for y in xrange(int(random()*20))]
-    
+
     dupes = []
     itemSet = set()
     while items:
@@ -789,20 +669,6 @@ def reverseString(inputStr=None):
     numStr = ''.join([str(int(random()*100)) for x in xrange(int(random()*10))])
     revStr = numStr[::-1]
     print "Original str: %s, reversed str: %s" % (numStr, revStr)
-
-if __name__ == '__main__':
-    funcname = sys.argv[-1]
-    if funcname in locals():
-        func = locals()[funcname]
-        func()
-    else:
-        funcs = [func for func in locals().values() if hasattr(func, '__call__')]
-        print "What would you like me to run? %s " % funcs
-
-
-#!/usr/bin/env python
-import sys
-from random import random
 
 
 def radix(items=None):
@@ -841,5 +707,3 @@ def radix(items=None):
         buckets = [list() for x in xrange(0, 10)]
     print items
 
-if __name__ == '__main__':
-    sys.exit(radix())

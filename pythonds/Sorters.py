@@ -52,12 +52,10 @@ class SelectionSorter(object):
             unsorted = False
             iterations += 1
             largest = seq[0]
-            largestIndex = 0
             n = 0
             for item in seq:
                 if item > largest:
                     largest = item
-                    largestIndex = n
                     unsorted = True
                 n += 1
             # swap values, counting back from the end of the list
