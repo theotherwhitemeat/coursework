@@ -1,0 +1,845 @@
+#!/usr/bin/env python
+
+class TreeNode(object):
+
+    def __init__(self, val):
+        self.val = val
+        self.left = None  # left leaf
+        self.right = None  # right leaf
+        self.level = None  # height?
+
+class BST(object):
+
+    def __init__(self):
+        self.root = None
+
+    def insert(self, val):
+        """ Returns: None, inserts val. """
+        if not self.root:
+            self.root = TreeNode(val)
+        else:
+            self.insertNode(self.root, val)
+
+    def insertNode(self, node, val):
+        """ Returns: None, inserts node. """
+        if val <= node.val:
+            if node.left:
+                self.insertNode(node.left, val)
+            else:
+                node.left = TreeNode(val)
+        elif val > node.val:
+            if node.right:
+                self.insertNode(node.right, val)
+            else:
+                node.right = TreeNode(val)
+
+    def find(self, val):
+        """ Returns: TreeNode with val. """
+        return self.findNode(self.root, val)
+
+    def findNode(self, val):
+        """ Returns: TreeNode with val. """
+        if node is None:
+            return False
+        elif node.val == val:
+            return True
+        elif val < node.val:
+            return self.findNode(node.left, val)
+        else:
+            return self.findNode(node.right, val)
+
+    def preorder(self, root=None):
+        """ Returns: None, executes preorder traversal. """
+        if self.root:
+            print self.root.val
+            self.preorder()
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    # Running directly?  Let's validate our BST!
+
+import sys
+from collections import LinkedList
+
+class Dequeue(object):
+
+	def __init__(self, iterable=None):
+
+		self._deq = LinkedList()
+
+	def pushleft(self, item):
+		""" Returns: None.  Pushes to left of dequeue. """
+
+		self._deq.
+
+
+
+
+
+def main():
+	""" Returns: None.  Validates Dequeue. """
+
+
+if __name__ == '__main__':
+	sys.exit(main())#!/usr/bin/env python
+
+
+class IndexOutOfRangeError(Exception):
+    pass
+
+class Node(object):
+    """ Classic Node class for use in
+    LinkedList. """
+
+    def __init__(self, data=None):
+        
+        self._data = data
+        self._next = None
+        self._prev = None
+
+    def setNext(self, item):
+        """ Returns: None, sets next item. """
+        self._next = item
+
+    def getNext(self):
+        """ Returns: item (type agnostic). """
+        return self._next
+
+    def setPrev(self, item):
+        """ Returns: None, sets next item. """
+        self._prev = item
+
+    def getPrev(self):
+        """ Returns: item (type agnostic). """
+        return self._prev
+
+    def getData(self):
+        """ Returns: data (type agnostic). """
+        return self._data
+
+    def setData(self, data):
+        """ Returns: None, sets data. """
+        self._data = data
+
+
+class LinkedList(object):
+    """ LinkedList class. """
+
+    def __init__(self):
+        self._head = None
+
+    def __str__(self):
+        """ Returns: fancy string of items. """
+        cur = self._head
+        strout = ''
+        while cur:
+            strout += str(cur.getData())
+            if cur.getNext():
+                strout += ">>"
+            else:
+                break
+            cur = cur.getNext()
+        return strout
+
+    def search(self, item):
+        """ Returns: index (int) of item. """
+        return self.index(item) is not None
+    
+    def index(self, item):
+        """ Returns: index of item, or None. """
+        n = 0
+        cur = self._head
+        while cur:
+            # this comparison is sketchy because
+            #  of duck-typing... but oh well!
+            if cur.getData() == item:
+                return n
+            else:
+                n += 1
+                cur = cur.getNext()
+
+    def add(self, item):
+        """ Returns: None, places item at HEAD """
+        newNode = Node(item)
+        newNode.setNext(self._head)
+        self._head = newNode
+
+    def append(self, item):
+        """ Returns: None, appends item to TAIL of list """
+        cur = self._head
+        while cur.getNext():
+            cur = cur.getNext()
+        cur.setNext(Node(item))
+
+    def insert(self, index, item):
+        """ Returns: None. Inserts item @ index. """
+        cur = self._head
+        prev = None
+        next = cur.getNext()
+        item = Node(item)
+        n = 0
+        while cur:
+            if index == n:
+                if n == 0:
+                    self._head = item
+                    item.setNext(cur)
+                else:
+                    prev.setNext(item)
+                    item.setNext(cur)
+                return
+            elif n > index:
+                raise IndexOutOfRangeError
+            else:
+                cur = cur.getNext()
+                n += 1
+
+    def pop(self, index=None):
+        """ Returns: item (type agnostic). """
+        cur = self._head
+        prev = None
+        n = 0
+        while cur:
+            if index and n == index:
+                if n > 0:
+                    prev.setNext(cur.getNext())
+                else:
+                    self._head = cur.getNext()
+                return cur.getData()
+            elif not cur.getNext() and not index:
+                prev.setNext(None)
+                return cur.getData()
+            else:
+                prev = cur
+                cur = cur.getNext()
+                n += 1
+        if index > n:
+            raise IndexOutOfRangeError
+
+    def remove(self, item):
+        """ Returns: None, removes item. """
+        cur = self._head
+        next = self._head.getNext()
+        prev = None
+        while cur is not None:
+            if cur is self._head:
+                #  cur  nex
+                #  []>>>[]>>>[]
+                self._head = next
+                break
+            elif prev:
+                #  prev cur  nex
+                #  []>>>[]>>>[]
+                prev.setNext(next)
+                break
+            else:
+                prev = cur
+                cur = cur.getNext()
+                if cur:
+                    next = cur.getNext()
+
+    def isEmpty(self):
+        """ Returns: bool. """
+        return self._head is None
+
+    def size(self):
+        """ Returns: size (int). """
+        n = 0
+        cur = self._head
+        while cur:
+            n += 1
+            cur = cur.getNext()
+
+        return n
+
+    def getMiddle(self):
+        """ Returns: middle Node element. """
+        cur = self._head
+        mid = self._head
+        n = 0
+        while cur:
+            cur = cur.getNext()
+            if (n % 2):
+                mid = mid.getNext()
+            n += 1
+        return mid.getData()
+
+
+if __name__ == '__main__':
+    """ Validates Node, LinkedList. """
+
+    nodeA, nodeB = Node(1), Node(2)
+    nodeA.setNext(nodeB)
+    nodeB.setPrev(nodeA)
+    assert nodeA.getData() == 1
+    assert nodeB.getData() == 2
+    assert nodeA.getNext() is nodeB
+    assert nodeB.getPrev() is nodeA
+
+    tlist = LinkedList()
+    tlist.add(1)
+    print tlist
+    assert tlist.search(1)
+    assert tlist.index(1) == 0
+    assert tlist.size() == 1
+    tlist.add(2)
+    print tlist
+    assert tlist.index(1) == 1
+    assert tlist.index(2) == 0
+    assert tlist.search(1)
+    assert tlist.size() == 2
+    assert not tlist.isEmpty()
+
+    tlist.append(3)
+    tlist.append(4)
+    print tlist
+    assert tlist.__str__() == "2>>1>>3>>4"
+
+    # test insert() and pop()
+    tlist = LinkedList()
+    tlist.add(2)
+    tlist.insert(0, 1)
+    tlist.insert(0, 0)
+    assert tlist.index(0) == 0
+    assert tlist.index(1) == 1
+    assert tlist.index(2) == 2
+
+    assert tlist.size() == 3
+    assert tlist.pop() == 2
+    assert tlist.size() == 2
+    assert tlist.index(tlist.size() - 1) == tlist.pop(tlist.size() - 1)
+
+    # test getMiddle()
+    tlist = LinkedList()
+    tlist.add(1)
+    tlist.add(2)
+    tlist.add(3)
+    print tlist.getMiddle()
+    assert tlist.getMiddle() == 2
+
+
+
+
+
+
+
+
+
+
+
+
+#!/usr/bin/env python
+
+class Queue(object):
+
+    def __init__(self):
+        self.inq = []
+        self.outq = []
+
+    def __len__(self):
+        """ Returns: int, size of queue. """
+        return self.size()
+
+    def enqueue(self, item):
+        """ Returns: None.  Adds item to queue. """
+        self.inq.append(item)
+
+    def dequeue(self):
+        """ Returns: item from queue. """
+        if not len(self.outq):
+            for item in self.inq[::-1]:
+                self.outq.append(item)
+            self.inq = []
+
+        if not len(self.outq):
+            return None
+        else:
+            return self.outq.pop()
+
+    def size(self):
+        """ Returns: int, size of queue. """
+        return len(self.inq) + len(self.outq)
+
+    def isEmpty(self):
+        """ Returns: bool. """
+        return not bool(self.size())
+
+
+if __name__ == '__main__':
+    """ Returns: None.  Validates queue. """
+
+    queuey = Queue()
+    items = [1, 2, 3, 4, 5]
+    map(queuey.enqueue, items)
+
+    for i, item in enumerate(items):
+        assert queuey.size() == (5 - i)
+        assert not queuey.isEmpty()
+        qitem = queuey.dequeue()
+        assert item == qitem
+
+#!/usr/bin/env python
+
+class BubbleSorter(object):
+    """ Bubble sort: iterate over sequence, comparing adjacent items
+    and swapping them along the way.  O(n**2) """
+
+    def __init__(self, seq):
+        self._seq = seq
+        self.sort()
+
+    def __str__(self):
+        """ Returns: str of sorted sequence. """
+        return str(self._seq)
+
+    def sort(self):
+        """ Returns: None, sorts internal sequence. """
+
+        seq = self._seq
+        unsorted = True
+        # We process list until no additional swaps are made
+        #   ...that's how we know we're sorted.
+        while unsorted:
+            index = 0
+            unsorted = False
+            while index+1 < len(seq):
+                # Swap items around if out of order
+                if seq[index] > seq[index+1]:
+                    seq[index], seq[index+1] = seq[index+1], seq[index]
+                    unsorted = True
+                index += 1
+                #print "Iter: %s" % seq
+            #print "unsorted: %s" % unsorted
+        self._seq = seq
+        #print seq
+
+class SelectionSorter(object):
+    """ Selection sort: find nth largest item, place at sequence[-n]. 
+    O(n**2) """
+
+    def __init__(self, seq):
+        self._seq = seq
+        self.sort()
+
+    def sort(self):
+        """ Returns: None, sorters internal sequence. """
+
+        seq = self._seq
+        unsorted = True
+        iterations = 0
+        while unsorted:
+            # sentinel value
+            unsorted = False
+            iterations += 1
+            largest = seq[0]
+            largestIndex = 0
+            n = 0
+            for item in seq:
+                if item > largest:
+                    largest = item
+                    largestIndex = n
+                    unsorted = True
+                n += 1
+            # swap values, counting back from the end of the list
+            seq[-iterations], seq[n] = seq[n], seq[-iterations]
+
+class InsertionSorter(object):
+    """ Insertion sort: start at item 0 in sequence, and build a sorted
+    sublist by selecting an additional item, and swapping it into the
+    correct place in the list, for example:
+
+    : 5, 3, 8, 2
+    : 3, 5, 8, 2
+    : 2, 3, 5, 8
+    """
+
+    def __init__(self, seq):
+        self._seq = seq
+        self.sort()
+
+    def sort(self):
+        """ Returns: None, sorts internal sequence. """
+        seq = self._seq
+        for n in xrange(0, len(seq)-1):
+            print seq
+            while seq[n] > seq[n + 1]:
+                seq[n], seq[n + 1] = seq[n + 1], seq[n]
+                if n > 0:  # if we're past first position...
+                    n -= 1  # go back one position
+                else:
+                    n += 1
+        self._seq = seq
+        print seq
+
+class RadixSorter(object):
+    """ Radix sort:
+    1) Determine number of digits in largest number
+    2) Iterate over numbers once for each number of digits, placing them in
+        buckets according to the nth digit
+    3) Dump buckets back into main list, and repeat for each digit
+
+    [31, 1]
+    [2, 42] --> 31, 1, 2, 42
+    >>>>>>>
+    [1, 2]
+    [31]
+    [42] --> 1, 2, 31, 42
+    >>>>>>>
+    """
+
+    def __init__(self, seq):
+        self._seq = self.sort(seq)
+
+    def sort(items=None):
+        if not items:
+            items = [int(random() * 100) for x in xrange(0, int(random() * 100))]
+
+        #print "We haz items: %s" % items
+
+        # Determine maximum number of iterations necessary
+        maxItem = max(items)
+        maxLen = 1
+        while maxItem:
+            maxItem = maxItem / 10
+            maxLen += 1
+
+        # Create our buckets
+        buckets = [list() for x in xrange(0, 10)]
+
+        # Iterate once for each digit length
+        for digitplace in xrange(1, maxLen):
+            # Pop off each item from main list
+            while items:
+                item = items.pop()
+                if item < (10 ** (digitplace - 1)):
+                    # If divider is more than on digit
+                    #  larger than item, place in bucket 0
+                    bucknum = 0
+                else:
+                    # Determine value of item digit @ digitplace
+                    bucknum = item / (10 ** (digitplace - 1)) % (10 ** digitplace)
+                buckets[bucknum].append(item)
+            for bucket in buckets:
+                # Iterate over list backwards
+                for item in bucket[::-1]:
+                    items.append(item)
+            buckets = [list() for x in xrange(0, 10)]
+        return items
+
+def getRandomSequence():
+    """ Returns: random list of ints, 20 ints,
+    int size: 0-100. """
+    from random import random
+    seq = [int(random() * 100) for x in xrange(0, 20)]
+    return seq
+
+if __name__ == '__main__':
+    # If called directly, let's validate our sorter!
+
+    randomSequence = getRandomSequence()
+    sorter = InsertionSorter(randomSequence)
+
+
+#!/usr/bin/env python
+
+class Stack(object):
+
+    def __init__(self):
+        self.stack = []
+
+    def push(self, item):
+        """ Returns: None.  Adds item to stack. """
+        self.stack.append(item)
+
+    def pop(self):
+        """ Returns: item. Removes first item. """
+        return self.stack.pop()
+
+    def peek(self):
+        """ Returns: first item """
+        return self.stack[-1]
+
+    def isEmpty(self):
+        """ Returns: bool. """
+        return not len(self.stack)
+
+    def size(self):
+        """ Returns: stack size. """
+        return len(self.stack)
+
+    def __len__(self):
+        """ Returns: len, silly. """
+        return self.size()
+
+if __name__ == '__main__':
+    """ Returns: nothing.  Validates Stack."""
+
+    stacky = Stack()
+    items = [1, 2, 3, 4, 5]
+    map(stacky.push, items)
+
+    for i, item in enumerate(items[::-1]):
+        assert stacky.size() == (5 - i)
+        assert not stacky.isEmpty()
+        assert item == stacky.peek()
+        assert item == stacky.pop()
+
+    
+import sys
+
+
+def getBits(num):
+	""" Returns: int, bitcount of num. """
+
+	total = 0
+	while(num):
+		total += num & 0b1
+		num = num >> 1
+
+	return total
+
+
+def main():
+	""" Returns: None.  Counts bits in sys.argv[-1] """
+
+	numInput = sys.argv[-1]
+
+	try:
+		bits = int(numInput)
+	except ValueError:
+		print >> sys.stderr, "Give me a number, please, not this: %s" % numInput
+
+	bitTotal = getBits(bits)
+
+	print "%d bits in %d"  % (bitTotal, bits)
+
+if __name__ == '__main__':
+	sys.exit(main())
+#!/usr/bin/env python
+from collections import defaultdict
+import sys
+import types  # types.FunctionType
+
+# setup some examples, could be useful
+exampleNums = [3, 6, 24, 6234, 2342, 2]
+anagrams = ['hearst', 'earths']
+
+def areAnagrams(words=None):
+    """ Returns: bool.  True if words are
+        anagrams, else false. """
+
+    # Strategy:
+    #  Populate dictionaries with chars and counts,
+    #  then compare.
+
+    if not words:
+        words = anagrams
+
+    worda, wordb = words
+    wordaCounts, wordbCounts = defaultdict(int), defaultdict(int)
+
+    # Early out: different lengths
+    if len(worda) != len(wordb):
+        return False
+
+    for word, wordCount in zip((worda, wordb), (wordaCounts, wordbCounts)):
+        for char in word:
+            wordCount[char] += 1
+
+    equal = (wordaCounts == wordbCounts)
+    print "%s and %s are anagrams? %s" % (worda, wordb, equal)
+    return equal
+
+
+def minLinear(nums=None):
+    """ Returns: smallest number from list in
+        linear time. """
+
+    # this is academic, as there's a min() function
+    #  that runs in linear time already.  Oh well.
+
+    if not nums:
+        nums = exampleNums
+
+    smallest = nums[0]
+
+    for num in nums:
+        if num < smallest:
+            smallest = num
+
+    print "Smallest: %d" % smallest
+    return smallest            
+
+def minSquared(nums=None):
+    """ Returns: smallest number from list, but does
+        by comparing each number with each number
+        O(n**2). """
+
+    # Let's have some default interaction
+    if not nums:
+        nums = exampleNums
+
+    # O(n), so ignorable cheat
+    smallest = max(nums)
+
+    for i in nums:
+        for j in nums:
+            if i < j and i < smallest:
+                smallest = i
+
+    print "Smallest: %d" % smallest
+    return smallest
+
+def parChecker(symbolString):
+    """ Returns: bool, assuring you of paren
+        evenness, or your failure as a person. """
+
+    from Stack import Stack
+
+    # early out: uneven string
+    if (len(symbolString) % 2):
+        return False
+
+    parens = Stack()
+    for char in symbolString:
+        if char == '(':
+            parens.push(char)
+        else:
+            try:
+                parens.pop()
+            except:
+                # unbalanced parens will puke
+                return False
+
+    return not(len(parens))
+
+def evenChecker(symbolString):
+    """ Returns: bool, of evenness of input string. """
+
+    pairs = {')':'(', ']':'[', '}':'{'}
+    openers, closers = pairs.values(), pairs.keys()
+
+    from Stack import Stack
+
+    # early out: uneven string
+    if (len(symbolString) % 2):
+        return False
+
+    stack = Stack()
+
+    for char in symbolString:
+        if char in openers:
+            stack.push(char)
+        else:
+            # bail if the stack empty, or if the chars don't match up
+            if not len(stack) or (stack.peek() != pairs[char]):
+                # early out
+                return False
+            else:
+                stack.pop()
+
+    return not(len(stack))
+
+def divby2(num):
+    """ Returns: binary version of number. """
+    # this is an academic exercise, given the bin() function
+
+    from Stack import Stack
+
+    numstack = Stack()
+    while num > 0:
+        rem = num % 2
+        if rem:
+            numstack.push(1)
+        else:
+            numstack.push(0)
+        num = num / 2
+
+    binstring = ''
+    while len(numstack):
+        binstring += str(numstack.pop())
+    return binstring
+
+def getDupes(items=None):
+    """ Returns: duplicate items. """
+
+    from random import random
+    if not items:
+        items = [int(random()*100) for y in xrange(int(random()*20))]
+    
+    dupes = []
+    itemSet = set()
+    while items:
+        item = items.pop()
+        if item in itemSet:
+            dupes.append(item)
+        itemSet.add(item)
+
+    print "Items: %s, dupes: %s" % (itemSet, dupes)
+
+def reverseString(inputStr=None):
+    """ Returns: reversed string. """
+
+    from random import random
+
+    numStr = ''.join([str(int(random()*100)) for x in xrange(int(random()*10))])
+    revStr = numStr[::-1]
+    print "Original str: %s, reversed str: %s" % (numStr, revStr)
+
+if __name__ == '__main__':
+    funcname = sys.argv[-1]
+    if funcname in locals():
+        func = locals()[funcname]
+        func()
+    else:
+        funcs = [func for func in locals().values() if hasattr(func, '__call__')]
+        print "What would you like me to run? %s " % funcs
+
+
+#!/usr/bin/env python
+import sys
+from random import random
+
+
+def radix(items=None):
+    if not items:
+        items = [int(random() * 100) for x in xrange(0, int(random() * 100))]
+
+    print "We haz items: %s" % items
+
+    # Determine maximum number of iterations necessary
+    maxItem = max(items)
+    maxLen = 1
+    while maxItem:
+        maxItem = maxItem / 10
+        maxLen += 1
+
+    # Create our buckets
+    buckets = [list() for x in xrange(0, 10)]
+
+    # Iterate once for each digit length
+    for digitplace in xrange(1, maxLen):
+        # Pop off each item from main list
+        while items:
+            item = items.pop()
+            if item < (10 ** (digitplace - 1)):
+                # If divider is more than on digit
+                #  larger than item, place in bucket 0
+                bucknum = 0
+            else:
+                # Determine value of item digit @ digitplace
+                bucknum = item / (10 ** (digitplace - 1)) % (10 ** digitplace)
+            buckets[bucknum].append(item)
+        for bucket in buckets:
+            # Iterate over list backwards
+            for item in bucket[::-1]:
+                items.append(item)
+        buckets = [list() for x in xrange(0, 10)]
+    print items
+
+if __name__ == '__main__':
+    sys.exit(radix())
