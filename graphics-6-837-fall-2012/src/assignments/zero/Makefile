@@ -1,9 +1,7 @@
-#INCFLAGS  = -I /usr/include/GL
-INCFLAGS = /opt/X11/include/GL
-INCFLAGS += -I /mit/6.837/public/include/vecmath
+INCFLAGS = -I /media/sparklemagic/src/coursework/graphics-6-837-fall-2012/src/include/vecmath
 
-LINKFLAGS  = -lglut -lGL -lGLU
-LINKFLAGS += -L /mit/6.837/public/lib -lvecmath
+LINKFLAGS = -L /media/sparklemagic/src/coursework/graphics-6-837-fall-2012/lib -lvecmath
+LINKFLAGS += -lglut -lGL -lGLU
 
 CFLAGS    = -O2
 CC        = g++
