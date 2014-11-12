@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
+#include <stdlib.h>
 #include <vector>
 #include <vecmath.h>
 using namespace std;
@@ -17,10 +18,6 @@ vector<Vector3f> vecn;
 // This is the list of faces (indices into vecv and vecn)
 vector<vector<unsigned> > vecf;
 
-
-// You will need more global variables to implement color and position changes
-
-
 // These are convenience functions which allow us to call OpenGL 
 // methods on Vec3d objects
 inline void glVertex(const Vector3f &a) 
@@ -28,7 +25,6 @@ inline void glVertex(const Vector3f &a)
 
 inline void glNormal(const Vector3f &a) 
 { glNormal3fv(a); }
-
 
 // This function is called whenever a "Normal" key press is received.
 void keyboardFunc( unsigned char key, int x, int y )
@@ -39,15 +35,12 @@ void keyboardFunc( unsigned char key, int x, int y )
         exit(0);
         break;
     case 'c':
-        // add code to change color here
-		cout << "Unhandled key press " << key << "." << endl; 
+        // this will refresh the screen so that the user sees the color change
+        glutPostRedisplay();
         break;
     default:
         cout << "Unhandled key press " << key << "." << endl;        
     }
-
-	// this will refresh the screen so that the user sees the color change
-    glutPostRedisplay();
 }
 
 // This function is called whenever a "Special" key press is received.
@@ -78,6 +71,12 @@ void specialFunc( int key, int x, int y )
     glutPostRedisplay();
 }
 
+GLfloat getRandColor()
+{
+    // Get a random number, set the range between 0-99, convert to value between 0 and 1
+    return rand() % 100 / 100.0;
+}
+
 // This function is responsible for displaying the object.
 void drawScene(void)
 {
@@ -98,14 +97,12 @@ void drawScene(void)
 
     // Set material properties of object
 
-	// Here are some colors you might use - feel free to add more
-    GLfloat diffColors[4][4] = { {0.5, 0.5, 0.9, 1.0},
-                                 {0.9, 0.5, 0.5, 1.0},
-                                 {0.5, 0.9, 0.3, 1.0},
-                                 {0.3, 0.8, 0.9, 1.0} };
+    // Our colors consist of 3 random values, and 1 constant for RGBA (red, green, blue, alpha) reflectance of the material
+    // Reference: http://msdn.microsoft.com/en-us/library/windows/desktop/dd373945(v=vs.85).aspx
+    GLfloat randColors[4] = {getRandColor(), getRandColor(), getRandColor(), 1.0};
     
 	// Here we use the first color entry as the diffuse color
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, diffColors[0]);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, randColors);
 
 	// Define specular color and shininess
     GLfloat specColor[] = {1.0, 1.0, 1.0, 1.0};
