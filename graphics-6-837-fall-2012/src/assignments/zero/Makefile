@@ -1,6 +1,6 @@
-INCFLAGS = -I /media/sparklemagic/src/coursework/graphics-6-837-fall-2012/src/include/vecmath
+INCFLAGS = -I $(pwd)../../include/vecmath
 
-LINKFLAGS = -L /media/sparklemagic/src/coursework/graphics-6-837-fall-2012/lib -lvecmath
+LINKFLAGS = -L $(pwd)../../../lib -lvecmath
 LINKFLAGS += -lglut -lGL -lGLU
 
 CFLAGS    = -O2
