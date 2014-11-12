@@ -18,6 +18,13 @@ vector<Vector3f> vecn;
 // This is the list of faces (indices into vecv and vecn)
 vector<vector<unsigned> > vecf;
 
+// Light offsets
+float light_h_offset = 1.0f;
+float light_v_offset = 1.0f;
+
+// Color globals
+GLfloat randColors[4] = {0.5f, 0.5f, 0.5f, 1.0f};
+
 // These are convenience functions which allow us to call OpenGL 
 // methods on Vec3d objects
 inline void glVertex(const Vector3f &a) 
@@ -25,6 +32,21 @@ inline void glVertex(const Vector3f &a)
 
 inline void glNormal(const Vector3f &a) 
 { glNormal3fv(a); }
+
+GLfloat getRandColor()
+{
+    // Get a random number, set the range between 0-99, convert to value between 0 and 1
+    return rand() % 1000 / 1000.0;
+}
+
+void swapColors()
+{
+    // Our colors consist of 3 random values, and 1 constant for RGBA (red, green, blue, alpha) reflectance of the material
+    // Reference: http://msdn.microsoft.com/en-us/library/windows/desktop/dd373945(v=vs.85).aspx
+    randColors[0] = getRandColor();
+    randColors[1] = getRandColor();
+    randColors[2] = getRandColor();
+}
 
 // This function is called whenever a "Normal" key press is received.
 void keyboardFunc( unsigned char key, int x, int y )
@@ -36,11 +58,15 @@ void keyboardFunc( unsigned char key, int x, int y )
         break;
     case 'c':
         // this will refresh the screen so that the user sees the color change
-        glutPostRedisplay();
+        swapColors();
         break;
     default:
         cout << "Unhandled key press " << key << "." << endl;        
     }
+    // redraw the scene
+
+    cout << "RGBA: " << randColors[0] << " : " << randColors[1] << " : " << randColors[2] << " : " << randColors[3] << endl;
+    glutPostRedisplay();
 }
 
 // This function is called whenever a "Special" key press is received.
@@ -51,34 +77,30 @@ void specialFunc( int key, int x, int y )
     {
     case GLUT_KEY_UP:
         // add code to change light position
-		cout << "Unhandled key press: up arrow." << endl;
-		break;
+        light_v_offset += 0.5f;
+        break;
     case GLUT_KEY_DOWN:
         // add code to change light position
-		cout << "Unhandled key press: down arrow." << endl;
-		break;
+        light_v_offset -= 0.5f;
+        break;
     case GLUT_KEY_LEFT:
         // add code to change light position
-		cout << "Unhandled key press: left arrow." << endl;
-		break;
+        light_h_offset -= 0.5f;
+        break;
     case GLUT_KEY_RIGHT:
         // add code to change light position
-		cout << "Unhandled key press: right arrow." << endl;
-		break;
+        light_h_offset += 0.5f;
+        break;
     }
 
-	// this will refresh the screen so that the user sees the light position
+    // this will refresh the screen so that the user sees the light position
+    cout << "Light vertical offset: " << light_v_offset << endl;
+    cout << "Light horizontal offset: " << light_h_offset << endl;
     glutPostRedisplay();
 }
 
-GLfloat getRandColor()
-{
-    // Get a random number, set the range between 0-99, convert to value between 0 and 1
-    return rand() % 100 / 100.0;
-}
-
 // This function is responsible for displaying the object.
-void drawScene(void)
+void drawScene()
 {
     int i;
 
@@ -94,12 +116,6 @@ void drawScene(void)
     gluLookAt(0.0, 0.0, 5.0,
               0.0, 0.0, 0.0,
               0.0, 1.0, 0.0);
-
-    // Set material properties of object
-
-    // Our colors consist of 3 random values, and 1 constant for RGBA (red, green, blue, alpha) reflectance of the material
-    // Reference: http://msdn.microsoft.com/en-us/library/windows/desktop/dd373945(v=vs.85).aspx
-    GLfloat randColors[4] = {getRandColor(), getRandColor(), getRandColor(), 1.0};
     
 	// Here we use the first color entry as the diffuse color
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, randColors);
@@ -117,7 +133,7 @@ void drawScene(void)
     // Light color (RGBA)
     GLfloat Lt0diff[] = {1.0,1.0,1.0,1.0};
     // Light position
-	GLfloat Lt0pos[] = {1.0f, 1.0f, 5.0f, 1.0f};
+	GLfloat Lt0pos[] = {light_h_offset, light_v_offset, 5.0f, 1.0f};
 
     glLightfv(GL_LIGHT0, GL_DIFFUSE, Lt0diff);
     glLightfv(GL_LIGHT0, GL_POSITION, Lt0pos);
@@ -128,8 +144,6 @@ void drawScene(void)
     
     // Dump the image to the screen.
     glutSwapBuffers();
-
-
 }
 
 // Initialize OpenGL's rendering modes
