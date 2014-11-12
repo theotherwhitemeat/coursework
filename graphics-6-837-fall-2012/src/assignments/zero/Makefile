@@ -1,6 +1,6 @@
-INCFLAGS = -I $(pwd)../../include/vecmath
+INCFLAGS = -I ../../include/vecmath
 
-LINKFLAGS = -L $(pwd)../../../lib -lvecmath
+LINKFLAGS = -L ../../../lib -lvecmath
 LINKFLAGS += -lglut -lGL -lGLU
 
 CFLAGS    = -O2
