@@ -175,6 +175,35 @@ void reshapeFunc(int w, int h)
 void loadInput()
 {
 	// load the OBJ file here
+    // 1. create char buffer
+    // 2. read cin line by line
+    // 3. populate vertices, normals, and faces from cin
+    // 4. exit when cin is 0
+    const int MAX_BUFFER_SIZE = 80;
+    char buffer[MAX_BUFFER_SIZE];
+
+    // Ingest cin until we get our EOF notification via 0
+    while (cin.getline(buffer, MAX_BUFFER_SIZE))
+    {
+        stringstream ss(buffer);
+        string primitive;
+        ss >> primitive;
+        if (primitive == "v")
+        {
+            Vector3f v;
+            ss >> v[0] >> v[1] >> v[2];
+        }
+        else if (primitive == "vn")
+        {
+            Vector3f v;
+            ss >> v[0] >> v[1] >> v[2];
+        }
+        else if (primitive == "f")
+        {
+            
+        }
+    }
+    cout << "Done!" << endl;
 }
 
 // Main routine.
