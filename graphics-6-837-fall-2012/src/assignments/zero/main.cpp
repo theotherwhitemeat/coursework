@@ -7,6 +7,13 @@
 #include <vecmath.h>
 using namespace std;
 
+/* Scratchpad
+// for determining types:
+    #include <typeinfo>
+    cout << typeid(variablename).name() << '\n';
+
+*/
+
 // Globals
 
 // This is the list of points (3D vectors)
@@ -140,7 +147,22 @@ void drawScene()
 
 	// This GLUT method draws a teapot.  You should replace
 	// it with code which draws the object you loaded.
-	glutSolidTeapot(1.0);
+    if (vecv.size() == 0)
+    {
+	   glutSolidTeapot(1.0);
+    }
+    else
+    {
+        // If we have geometry:
+        //  1. iterate over faces
+        //  2. create normals, then vertices
+        glBegin(GL_TRIANGLES);
+        for (size_t i = 0; i < vecf.size(); i++)
+        {
+            //int a = vecf[i][0];
+            //glNormal3d(vecn);
+        }
+    }
     
     // Dump the image to the screen.
     glutSwapBuffers();
@@ -182,7 +204,8 @@ void loadInput()
     const int MAX_BUFFER_SIZE = 80;
     char buffer[MAX_BUFFER_SIZE];
 
-    // Ingest cin until we get our EOF notification via 0
+    // Ingest cin until we get our EOF notification.
+    // cin.getline returns 0 once EOF is hit.
     while (cin.getline(buffer, MAX_BUFFER_SIZE))
     {
         stringstream ss(buffer);
@@ -190,20 +213,50 @@ void loadInput()
         ss >> primitive;
         if (primitive == "v")
         {
+            // we are expecting points in the ascii format of
+            // a leading 'v' followed by three numeric values, 
+            // for example: v 1.2 3.1 1.0
             Vector3f v;
+            // apparently this does an implicit typecast from string
+            // to float, so that's pretty convenient
             ss >> v[0] >> v[1] >> v[2];
+            vecv.push_back(v);
         }
         else if (primitive == "vn")
         {
+            // we are expecting normals in the ascii format of
+            // a leading 'vn' followed by three numeric values, 
+            // for example: v 1.2 3.1 1.0
             Vector3f v;
             ss >> v[0] >> v[1] >> v[2];
+            vecn.push_back(v);
         }
         else if (primitive == "f")
         {
-            
+            // we are expecting faces in the ascii format of
+            // a leading 'f' followed by three groups of 3 values, 
+            // for example: f 1/2/3 4/5/6 7/8/9
+            string tempGroup;
+            // iterate over number groups split by ' ', then '/'
+            while(getline(ss, tempGroup, ' '))
+            {
+                stringstream numGroup(tempGroup);
+                string numval;
+                vector<unsigned> v;
+                while(getline(numGroup, numval, '/'))
+                {
+                    // cast string to unsigned, this should be stoi() actually
+                    v.push_back(unsigned(atoi(numval.c_str())));
+                }
+                vecf.push_back(v);
+            }
         }
     }
-    cout << "Done!" << endl;
+    // report some debug information to sanity check inputs
+    cout << "vertex count: " << vecv.size() << endl;
+    cout << "normal count: " << vecn.size() << endl;
+    cout << "face count: " << vecf.size() << endl;
+    cout << "Geometry is parsed, loading now..." << endl;
 }
 
 // Main routine.
