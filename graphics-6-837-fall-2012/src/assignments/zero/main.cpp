@@ -156,11 +156,40 @@ void drawScene()
         // If we have geometry:
         //  1. iterate over faces
         //  2. create normals, then vertices
-        glBegin(GL_TRIANGLES);
-        for (size_t i = 0; i < vecf.size(); i++)
+        for (size_t k = 0; k < vecf.size(); k++)
         {
-            //int a = vecf[i][0];
-            //glNormal3d(vecn);
+            // setup references to face indices
+            int a = vecf[k][0] - 1;
+            int b = vecf[k][1] - 1;
+            int c = vecf[k][2] - 1;
+            int d = vecf[k][3] - 1;
+            int e = vecf[k][4] - 1;
+            int f = vecf[k][5] - 1;
+            int g = vecf[k][6] - 1;
+            int h = vecf[k][7] - 1;
+            int i = vecf[k][8] - 1;
+
+            /*
+            //DEBUG
+            cout << "a: " << a << endl;
+            cout << "b: " << b << endl;
+            cout << "c: " << c << endl;
+            cout << "d: " << d << endl;
+            cout << "e: " << e << endl;
+            cout << "f: " << f << endl;
+            cout << "g: " << g << endl;
+            cout << "h: " << h << endl;
+            cout << "i: " << i << endl;
+            */
+
+            glBegin(GL_TRIANGLES);
+            glNormal3d(vecn[c][0], vecn[c][1], vecn[c][2]);
+            glVertex3d(vecn[a][0], vecn[a][1], vecn[a][2]);
+            glNormal3d(vecn[f][0], vecn[f][1], vecn[f][2]);
+            glVertex3d(vecn[d][0], vecn[d][1], vecn[d][2]);
+            glNormal3d(vecn[i][0], vecn[i][1], vecn[i][2]);
+            glVertex3d(vecn[g][0], vecn[g][1], vecn[g][2]);
+            glEnd();
         }
     }
     
@@ -196,16 +225,19 @@ void reshapeFunc(int w, int h)
 
 void loadInput()
 {
-	// load the OBJ file here
+	// load the OBJ file here, to globals... which
+    //  you know, feels pretty gross.
     // 1. create char buffer
     // 2. read cin line by line
     // 3. populate vertices, normals, and faces from cin
     // 4. exit when cin is 0
+
     const int MAX_BUFFER_SIZE = 80;
     char buffer[MAX_BUFFER_SIZE];
 
     // Ingest cin until we get our EOF notification.
     // cin.getline returns 0 once EOF is hit.
+    int faces = 0;
     while (cin.getline(buffer, MAX_BUFFER_SIZE))
     {
         stringstream ss(buffer);
@@ -236,17 +268,29 @@ void loadInput()
             // we are expecting faces in the ascii format of
             // a leading 'f' followed by three groups of 3 values, 
             // for example: f 1/2/3 4/5/6 7/8/9
-            string tempGroup;
-            // iterate over number groups split by ' ', then '/'
-            while(getline(ss, tempGroup, ' '))
+            string line;
+            // parse line by line
+            while(getline(ss, line))
             {
-                stringstream numGroup(tempGroup);
-                string numval;
                 vector<unsigned> v;
-                while(getline(numGroup, numval, '/'))
+                stringstream linestream(line);
+                string spacedGroup;
+                // Split each line on spaces, and below we will split on slashes
+                while(getline(linestream, spacedGroup, ' '))
                 {
-                    // cast string to unsigned, this should be stoi() actually
-                    v.push_back(unsigned(atoi(numval.c_str())));
+                    // Empty strings show up when splitting on spaces because: reasons
+                    if (spacedGroup == "")
+                    {
+                        continue;
+                    }
+                    stringstream spacedGroupStream(spacedGroup);
+                    string numval;
+                    // Now split on slashes, and we have individual strings to cast to unsigned
+                    while(getline(spacedGroupStream, numval, '/'))
+                    {
+                        // cast string to unsigned, this should be stoi() actually
+                        v.push_back(unsigned(atoi(numval.c_str())));
+                    }
                 }
                 vecf.push_back(v);
             }
