@@ -8,6 +8,7 @@
 using namespace std;
 
 /* Scratchpad
+//DEBUG
 // for determining types:
     #include <typeinfo>
     cout << typeid(variablename).name() << '\n';
@@ -67,12 +68,21 @@ void keyboardFunc( unsigned char key, int x, int y )
         // this will refresh the screen so that the user sees the color change
         swapColors();
         break;
+    case 'r':
+        // begin model rotation
+        /* do thing here to allow for model rotation
+        glutTimerFunc(delay,rotation,n);
+        glRotatef(angle,0,1,0);
+        */
+        break;
     default:
         cout << "Unhandled key press " << key << "." << endl;        
     }
+    /*
+    //DEBUG
+    //cout << "RGBA: " << randColors[0] << " : " << randColors[1] << " : " << randColors[2] << " : " << randColors[3] << endl;
+    */
     // redraw the scene
-
-    cout << "RGBA: " << randColors[0] << " : " << randColors[1] << " : " << randColors[2] << " : " << randColors[3] << endl;
     glutPostRedisplay();
 }
 
@@ -101,8 +111,11 @@ void specialFunc( int key, int x, int y )
     }
 
     // this will refresh the screen so that the user sees the light position
+    /*
+    //DEBUG
     cout << "Light vertical offset: " << light_v_offset << endl;
     cout << "Light horizontal offset: " << light_h_offset << endl;
+    */
     glutPostRedisplay();
 }
 
@@ -156,6 +169,7 @@ void drawScene()
         // If we have geometry:
         //  1. iterate over faces
         //  2. create normals, then vertices
+        glBegin(GL_TRIANGLES);
         for (size_t k = 0; k < vecf.size(); k++)
         {
             // setup references to face indices
@@ -182,15 +196,14 @@ void drawScene()
             cout << "i: " << i << endl;
             */
 
-            glBegin(GL_TRIANGLES);
             glNormal3d(vecn[c][0], vecn[c][1], vecn[c][2]);
             glVertex3d(vecn[a][0], vecn[a][1], vecn[a][2]);
             glNormal3d(vecn[f][0], vecn[f][1], vecn[f][2]);
             glVertex3d(vecn[d][0], vecn[d][1], vecn[d][2]);
             glNormal3d(vecn[i][0], vecn[i][1], vecn[i][2]);
             glVertex3d(vecn[g][0], vecn[g][1], vecn[g][2]);
-            glEnd();
         }
+        glEnd();
     }
     
     // Dump the image to the screen.
@@ -296,11 +309,14 @@ void loadInput()
             }
         }
     }
+    /*
+    //DEBUG
     // report some debug information to sanity check inputs
     cout << "vertex count: " << vecv.size() << endl;
     cout << "normal count: " << vecn.size() << endl;
     cout << "face count: " << vecf.size() << endl;
     cout << "Geometry is parsed, loading now..." << endl;
+    */
 }
 
 // Main routine.
