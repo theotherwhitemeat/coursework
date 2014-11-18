@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include <cmath>
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
@@ -16,6 +17,8 @@ using namespace std;
 */
 
 // Globals
+bool rotating = false;
+unsigned angle = 0;
 
 // This is the list of points (3D vectors)
 vector<Vector3f> vecv;
@@ -56,6 +59,19 @@ void swapColors()
     randColors[2] = getRandColor();
 }
 
+void timerCallbackRotate(int angleDiff)
+{
+    // rotate
+    angle += angleDiff;
+    glutPostRedisplay();
+    // Re-enable timer if rotation bool hasn't been disabled
+    if (rotating)
+    {
+        // time in usecs, callback, value for callback
+        glutTimerFunc(20, timerCallbackRotate, angleDiff);
+    }
+}
+
 // This function is called whenever a "Normal" key press is received.
 void keyboardFunc( unsigned char key, int x, int y )
 {
@@ -69,11 +85,12 @@ void keyboardFunc( unsigned char key, int x, int y )
         swapColors();
         break;
     case 'r':
-        // begin model rotation
-        /* do thing here to allow for model rotation
-        glutTimerFunc(delay,rotation,n);
-        glRotatef(angle,0,1,0);
-        */
+        rotating = !rotating;
+        if (rotating)
+        {
+            // begin model rotation
+            glutTimerFunc(20, timerCallbackRotate, 1);
+        }
         break;
     default:
         cout << "Unhandled key press " << key << "." << endl;        
@@ -130,6 +147,9 @@ void drawScene()
     // Rotate the image
     glMatrixMode( GL_MODELVIEW );  // Current matrix affects objects positions
     glLoadIdentity();              // Initialize to the identity
+
+    // Rotates on z-axis
+    glRotatef(angle, 0, 0, 1);
 
     // Position the camera at [0,0,5], looking at [0,0,0],
     // with [0,1,0] as the up direction.
@@ -236,7 +256,7 @@ void reshapeFunc(int w, int h)
     gluPerspective(50.0, 1.0, 1.0, 100.0);
 }
 
-void loadInput()
+void loadInput(char* infileName)
 {
 	// load the OBJ file here, to globals... which
     //  you know, feels pretty gross.
@@ -245,13 +265,13 @@ void loadInput()
     // 3. populate vertices, normals, and faces from cin
     // 4. exit when cin is 0
 
-    const int MAX_BUFFER_SIZE = 80;
-    char buffer[MAX_BUFFER_SIZE];
+    ifstream infile(infileName);
+    string buffer;
 
     // Ingest cin until we get our EOF notification.
     // cin.getline returns 0 once EOF is hit.
     int faces = 0;
-    while (cin.getline(buffer, MAX_BUFFER_SIZE))
+    while (getline(infile, buffer))
     {
         stringstream ss(buffer);
         string primitive;
@@ -323,7 +343,11 @@ void loadInput()
 // Set up OpenGL, define the callbacks and start the main loop
 int main( int argc, char** argv )
 {
-    loadInput();
+    // pass filename to load, if apropos
+    if (argc > 1)
+    {
+        loadInput(argv[1]);
+    }
 
     glutInit(&argc,argv);
 
