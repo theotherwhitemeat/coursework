@@ -20,6 +20,9 @@ using namespace std;
 bool rotating = false;
 unsigned angle = 0;
 
+// Global display list
+GLuint displayIndex;
+
 // This is the list of points (3D vectors)
 vector<Vector3f> vecv;
 
@@ -186,44 +189,7 @@ void drawScene()
     }
     else
     {
-        // If we have geometry:
-        //  1. iterate over faces
-        //  2. create normals, then vertices
-        glBegin(GL_TRIANGLES);
-        for (size_t k = 0; k < vecf.size(); k++)
-        {
-            // setup references to face indices
-            int a = vecf[k][0] - 1;
-            int b = vecf[k][1] - 1;
-            int c = vecf[k][2] - 1;
-            int d = vecf[k][3] - 1;
-            int e = vecf[k][4] - 1;
-            int f = vecf[k][5] - 1;
-            int g = vecf[k][6] - 1;
-            int h = vecf[k][7] - 1;
-            int i = vecf[k][8] - 1;
-
-            /*
-            //DEBUG
-            cout << "a: " << a << endl;
-            cout << "b: " << b << endl;
-            cout << "c: " << c << endl;
-            cout << "d: " << d << endl;
-            cout << "e: " << e << endl;
-            cout << "f: " << f << endl;
-            cout << "g: " << g << endl;
-            cout << "h: " << h << endl;
-            cout << "i: " << i << endl;
-            */
-
-            glNormal3d(vecn[c][0], vecn[c][1], vecn[c][2]);
-            glVertex3d(vecn[a][0], vecn[a][1], vecn[a][2]);
-            glNormal3d(vecn[f][0], vecn[f][1], vecn[f][2]);
-            glVertex3d(vecn[d][0], vecn[d][1], vecn[d][2]);
-            glNormal3d(vecn[i][0], vecn[i][1], vecn[i][2]);
-            glVertex3d(vecn[g][0], vecn[g][1], vecn[g][2]);
-        }
-        glEnd();
+        glCallList(displayIndex);
     }
     
     // Dump the image to the screen.
@@ -329,6 +295,52 @@ void loadInput(char* infileName)
             }
         }
     }
+    if (vecf.size() > 0)
+    {
+        // Load the geometry into a display list
+        // compile the display list, store a triangle in it
+        // IMPORTANT: don't do anything GL related until fully initialized...
+        displayIndex = glGenLists(1);
+        glNewList(displayIndex, GL_COMPILE_AND_EXECUTE);
+        //  1. iterate over faces
+        //  2. create normals, then vertices
+        glBegin(GL_TRIANGLES);
+        for (size_t k = 0; k < vecf.size(); k++)
+        {
+            // setup references to face indices
+            int a = vecf[k][0] - 1;
+            int b = vecf[k][1] - 1;
+            int c = vecf[k][2] - 1;
+            int d = vecf[k][3] - 1;
+            int e = vecf[k][4] - 1;
+            int f = vecf[k][5] - 1;
+            int g = vecf[k][6] - 1;
+            int h = vecf[k][7] - 1;
+            int i = vecf[k][8] - 1;
+
+            /*
+            //DEBUG
+            cout << "a: " << a << endl;
+            cout << "b: " << b << endl;
+            cout << "c: " << c << endl;
+            cout << "d: " << d << endl;
+            cout << "e: " << e << endl;
+            cout << "f: " << f << endl;
+            cout << "g: " << g << endl;
+            cout << "h: " << h << endl;
+            cout << "i: " << i << endl;
+            */
+
+            glNormal3d(vecn[c][0], vecn[c][1], vecn[c][2]);
+            glVertex3d(vecn[a][0], vecn[a][1], vecn[a][2]);
+            glNormal3d(vecn[f][0], vecn[f][1], vecn[f][2]);
+            glVertex3d(vecn[d][0], vecn[d][1], vecn[d][2]);
+            glNormal3d(vecn[i][0], vecn[i][1], vecn[i][2]);
+            glVertex3d(vecn[g][0], vecn[g][1], vecn[g][2]);
+        }
+        glEnd();
+        glEndList();    
+    }
     /*
     //DEBUG
     // report some debug information to sanity check inputs
@@ -343,12 +355,8 @@ void loadInput(char* infileName)
 // Set up OpenGL, define the callbacks and start the main loop
 int main( int argc, char** argv )
 {
-    // pass filename to load, if apropos
-    if (argc > 1)
-    {
-        loadInput(argv[1]);
-    }
-
+    // IMPORTANT: don't do anything GL related until fully initialized...
+    //  there will be no errors, but there will be tears.
     glutInit(&argc,argv);
 
     // We're going to animate it, so double buffer 
@@ -371,6 +379,12 @@ int main( int argc, char** argv )
 
     // Call this whenever window needs redrawing
     glutDisplayFunc( drawScene );
+
+    // pass filename to load, if apropos
+    if (argc > 1)
+    {
+        loadInput(argv[1]);
+    }
 
     // Start the main loop.  glutMainLoop never returns.
     glutMainLoop( );
