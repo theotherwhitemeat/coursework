@@ -19,6 +19,7 @@ using namespace std;
 // Globals
 bool rotating = false;
 unsigned angle = 0;
+int timerDelay = 40;
 
 // Global display list
 GLuint displayIndex;
@@ -37,7 +38,8 @@ float light_h_offset = 1.0f;
 float light_v_offset = 1.0f;
 
 // Color globals
-GLfloat randColors[4] = {0.5f, 0.5f, 0.5f, 1.0f};
+GLfloat targetColors[4] = {0.5f, 0.5f, 0.5f, 1.0f};
+GLfloat currentColors[4] = {0.5f, 0.5f, 0.5f, 1.0f};
 
 // These are convenience functions which allow us to call OpenGL 
 // methods on Vec3d objects
@@ -57,21 +59,60 @@ void swapColors()
 {
     // Our colors consist of 3 random values, and 1 constant for RGBA (red, green, blue, alpha) reflectance of the material
     // Reference: http://msdn.microsoft.com/en-us/library/windows/desktop/dd373945(v=vs.85).aspx
-    randColors[0] = getRandColor();
-    randColors[1] = getRandColor();
-    randColors[2] = getRandColor();
+    //cout << "swapping colors" << endl;
+    targetColors[0] = getRandColor();
+    targetColors[1] = getRandColor();
+    targetColors[2] = getRandColor();
+
+    //for (int i = 0; i < 3; i++)
+    //{
+    //    cout << "Target color " << i << " " << targetColors[i] << endl;
+    //    cout << "Current color " << i << " " << currentColors[i] << endl;
+    //}
 }
 
-void timerCallbackRotate(int angleDiff)
+bool colorOutOfDate()
 {
-    // rotate
-    angle += angleDiff;
-    glutPostRedisplay();
-    // Re-enable timer if rotation bool hasn't been disabled
+    return (currentColors[0] != targetColors[0] ||
+            currentColors[1] != targetColors[1] ||
+            currentColors[2] != targetColors[2]);
+}
+
+void timerCallback(int val)
+{
+    if (colorOutOfDate())
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            GLfloat diff = targetColors[i] - currentColors[i];
+            if (diff == 0)
+            {
+                continue;
+            }
+            else if (diff < 0.01)
+            {
+                currentColors[i] = targetColors[i];
+            }
+            else if (diff < 0)
+            {
+                currentColors[i] -= 0.01;
+            }
+            else // (diff > 0)
+            {
+                currentColors[i] += 0.01;
+            }
+        }
+    }
     if (rotating)
     {
+        angle += 1;
+    }
+    glutPostRedisplay();
+    // Re-enable timer if rotation bool hasn't been disabled
+    if (rotating or colorOutOfDate())
+    {
         // time in usecs, callback, value for callback
-        glutTimerFunc(20, timerCallbackRotate, angleDiff);
+        glutTimerFunc(timerDelay, timerCallback, 0);
     }
 }
 
@@ -86,14 +127,12 @@ void keyboardFunc( unsigned char key, int x, int y )
     case 'c':
         // this will refresh the screen so that the user sees the color change
         swapColors();
+        // update colors
+        glutTimerFunc(timerDelay, timerCallback, 0);
         break;
     case 'r':
         rotating = !rotating;
-        if (rotating)
-        {
-            // begin model rotation
-            glutTimerFunc(20, timerCallbackRotate, 1);
-        }
+        glutTimerFunc(timerDelay, timerCallback, 0);
         break;
     default:
         cout << "Unhandled key press " << key << "." << endl;        
@@ -161,7 +200,7 @@ void drawScene()
               0.0, 1.0, 0.0);
     
 	// Here we use the first color entry as the diffuse color
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, randColors);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, currentColors);
 
 	// Define specular color and shininess
     GLfloat specColor[] = {1.0, 1.0, 1.0, 1.0};
