@@ -332,11 +332,11 @@ void loadInput(char* infileName)
             */
 
             glNormal3d(vecn[c][0], vecn[c][1], vecn[c][2]);
-            glVertex3d(vecn[a][0], vecn[a][1], vecn[a][2]);
+            glVertex3d(vecv[a][0], vecv[a][1], vecv[a][2]);
             glNormal3d(vecn[f][0], vecn[f][1], vecn[f][2]);
-            glVertex3d(vecn[d][0], vecn[d][1], vecn[d][2]);
+            glVertex3d(vecv[d][0], vecv[d][1], vecv[d][2]);
             glNormal3d(vecn[i][0], vecn[i][1], vecn[i][2]);
-            glVertex3d(vecn[g][0], vecn[g][1], vecn[g][2]);
+            glVertex3d(vecv[g][0], vecv[g][1], vecv[g][2]);
         }
         glEnd();
         glEndList();    
